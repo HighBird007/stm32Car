@@ -126,7 +126,7 @@ int main(void)
 			liuxinusart(&huart3,testdata);
 		}
 	//	MPU_Get_RAW_Accelerometer();
-		HAL_Delay(200);
+		HAL_Delay(20);
   }
   /* USER CODE END 3 */
 }

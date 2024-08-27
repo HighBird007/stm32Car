@@ -128,11 +128,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		char order = data[0];
 		char showtest[100];
 		if(order=='q'){
-		//	PIDController_Init(&p);
+			PIDController_Init(&p);
 	status = 1;
 	magangle = hmc5883l_read(Xoffest,Yoffest,Kx,Ky);
-	Car_Forward();
-			
+	Car_Forward();	
 	sprintf(showtest,"Magangle = %d\n",magangle);
 	HAL_UART_Transmit(&huart3,(uint8_t*)showtest,strlen(showtest),1000);
 		}else

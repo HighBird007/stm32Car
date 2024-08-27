@@ -6,7 +6,7 @@ int status = 0;
 int magangle = 0;
 PIDController p;
 void car_init(){
- 	 p.Kp = 0.5f;             // 设置比例增益
+ 	p.Kp = 0.5f;             // 设置比例增益
     p.Ki = 0.1f;             // 设置积分增益
     p.Kd = 0.01f;            // 设置微分增益
 
@@ -18,7 +18,7 @@ void car_init(){
     p.limMinInt = -5.0f;     // 设置积分器最小忿
     p.limMaxInt = 5.0f;      // 设置积分器最大忿
 
-    p.T = 0.2f;              // 设置采样时间（秒＿
+    p.T = 0.02f;              // 设置采样时间（秒＿
 	PIDController_Init(&p);	
 }
 void Turn_Forward(void){
@@ -63,7 +63,6 @@ void Car_Backward(void){
 }
 void Car_TurnLeft(void){
     Enable_left();
-    Enable_right();
 	Turn_left();
 
 }
@@ -73,14 +72,15 @@ void Car_TurnRight(void){
 }
 void Car_Stop(void){
     Enable_left();
+	Enable_right();
 	shut();
 	status = 0;
 }
 void Enable_left(void){
-	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
 }
 void Enable_right(void){
-	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
 }
 void Set_Speed(speed){
 	switch(speed){
@@ -102,27 +102,41 @@ void Set_Speed(speed){
 		break;
 	}
 }
-void PWM_Turn( float num){
-	//num > 0 则左轮子 速度快  反之 右轮子速度快
-	if(num>0){
-		//右转
-if(num>=8){
-			__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,400+num*20);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,0);
-	return ;
-		}
-	__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,400+num*20);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,400);
-		
-	}else if(num<0){
-		num = __fabs(num);
-		if(num>=8){
-			__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,400+num*20);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,0);
-			return ;
-		}
-		
-	__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,0);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,400+num*20);
-	}
+//左轮TIM_CHANNEL_2 右TIM_CHANNEL_1
+void PWM_Turn(float num) {
+    // 基础速度，确保车辆在直线行驶时两轮速度相同
+    const int baseSpeed = 400;
+    const int maxSpeedAdjustment = 160; // 最大调整幅度
+
+    // num > 0 表示左转，num < 0 表示右转
+    if (num > 0) {
+		 
+        int leftSpeed = baseSpeed + (int)(num * 20);
+        int rightSpeed = baseSpeed - (int)(num * 20);
+
+        if (rightSpeed < 0) rightSpeed = 0;  // 确保速度不为负
+        if (leftSpeed > baseSpeed + maxSpeedAdjustment) leftSpeed = baseSpeed + maxSpeedAdjustment;
+
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, leftSpeed);
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, rightSpeed);
+        // 左转，右轮加速，左轮减速
+       
+    } else if (num < 0) {
+        // 右转，左轮加速，右轮减速
+		num = -num; // 取绝对值
+        int leftSpeed = baseSpeed - (int)(num * 20);
+        int rightSpeed = baseSpeed + (int)(num * 20);
+
+        if (leftSpeed < 0) leftSpeed = 0;  // 确保速度不为负
+        if (rightSpeed > baseSpeed + maxSpeedAdjustment) rightSpeed = baseSpeed + maxSpeedAdjustment;
+
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, leftSpeed);
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, rightSpeed);
+    } else {
+        // num == 0，保持直线行驶
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, baseSpeed);
+        __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, baseSpeed);
+    }
 }
+
+

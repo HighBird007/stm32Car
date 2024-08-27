@@ -2,7 +2,7 @@
 #include "usart.h"
 #include "math.h"
 #include "spi.h"
-#include "m25q.h"
+
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -27,12 +27,6 @@ void hmc5883l_init(){
 	
 		HAL_I2C_Mem_Write(&hi2c1,HMC5883L_ADDRESS,HMC5883L_MODE, 1, &data, 1,1000); //配置模式寄存器，连续模式
 
-
-	
-	 initcountread =  readcount();
-	sprintf(initcount,"initcount %d \n",initcountread);
-	HAL_UART_Transmit(&huart3,(uint8_t*)initcount,strlen(initcount),1000);	
-	savecount(initcountread==0?1:0);	
 		HAL_Delay(100);
 	
 	
