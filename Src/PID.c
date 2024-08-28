@@ -2,6 +2,7 @@
 #include "usart.h"
 #include "stdio.h"
 #include "string.h"
+#include "math.h"
 void PIDController_Init(PIDController *pid) {
 
 	/* Clear controller variables */
@@ -14,27 +15,32 @@ void PIDController_Init(PIDController *pid) {
 	pid->out = 0.0f;
 
 }
+//num>0 则说明 当前角度小于预订方向角   <0则说明当前角度大于预定方向角
+float getTurnRaw(int point , int raw){
+	int delta = point - raw;
+	if (delta > 180) {
+    delta -= 360;
+    } else if (delta < -180) {
+    delta += 360;
+    }
 
+	return delta;
+	
+}
 float PIDController_Update(PIDController *pid, float setpoint, float measurement) {
 
     /*
     * Error signal
     */
-    float error = setpoint - measurement;
+	
+    float error = getTurnRaw(setpoint,measurement);
 
-    // 调试：打印错误信号
-//    char debug[100];
-//    sprintf(debug, "Error: %f \n", error);
-//    HAL_UART_Transmit(&huart3, (uint8_t*)debug, strlen(debug), 1000);
 
     /*
     * Proportional
     */
     float proportional = pid->Kp * error;
 
-    // 调试：打印比例项
-//    sprintf(debug, "Proportional: %f \n", proportional);
-//    HAL_UART_Transmit(&huart3, (uint8_t*)debug, strlen(debug), 1000);
 
     /*
     * Integral
@@ -48,9 +54,6 @@ float PIDController_Update(PIDController *pid, float setpoint, float measurement
         pid->integrator = pid->limMinInt;
     }
 
-    // 调试：打印积分项
-//    sprintf(debug, "Integrator: %f \n", pid->integrator);
-//    HAL_UART_Transmit(&huart3, (uint8_t*)debug, strlen(debug), 1000);
 
     /*
     * Derivative (band-limited differentiator)
@@ -59,9 +62,7 @@ float PIDController_Update(PIDController *pid, float setpoint, float measurement
                         + (2.0f * pid->tau - pid->T) * pid->differentiator)
                         / (2.0f * pid->tau + pid->T);
 
-    // 调试：打印微分项
-//    sprintf(debug, "Differentiator: %f \n", pid->differentiator);
-//    HAL_UART_Transmit(&huart3, (uint8_t*)debug, strlen(debug), 1000);
+
 
     /*
     * Compute output and apply limits
@@ -74,9 +75,7 @@ float PIDController_Update(PIDController *pid, float setpoint, float measurement
         pid->out = pid->limMin;
     }
 
-    // 调试：打印最终输出
-//    sprintf(debug, "PID Output: %f \n", pid->out);
-//    HAL_UART_Transmit(&huart3, (uint8_t*)debug, strlen(debug), 1000);
+
 
     /* Store error and measurement for later use */
     pid->prevError       = error;
