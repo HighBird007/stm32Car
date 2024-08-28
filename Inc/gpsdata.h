@@ -4,12 +4,20 @@
 #include "math.h"
 #include "usart.h"
 typedef struct{
+	double longitude;
  double latitude;
- double longitude;
+ 
 }point;
+void init_GPS();
+double calculateBearing(point start, point end);
+void updateCurrentPosition();
+
 extern point points[];
 extern uint8_t gpsdata[];
-void init_GPS();
-int gowhere();
-double calculateBearing(point start, point end);
+
+extern double longitude  ;
+extern double latitude  ;
+
+extern int positionPointTag ;
+extern point currentLoAndLa;
 #endif

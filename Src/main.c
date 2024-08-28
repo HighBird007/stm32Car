@@ -36,9 +36,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void liuxinusart(UART_HandleTypeDef *h , char *message){
-	HAL_UART_Transmit(h,(uint8_t*)message,strlen(message),1000);
-}
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -56,6 +54,7 @@ void liuxinusart(UART_HandleTypeDef *h , char *message){
 /* USER CODE BEGIN PV */
 uint8_t data[1];
  float Xoffest,Yoffest,Kx,Ky;
+  float currentm = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,15 +103,14 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI2_Init();
   MX_USART2_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   car_init();
   HAL_UART_Receive_IT(&huart3,data,1);
   hmc5883l_init();
   hmc5883l_selftest(&Xoffest,&Yoffest,&Kx,&Ky);
-  init_mpu();
- char testdata[100];
- float currentm;
    init_GPS();
+   HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -124,11 +122,12 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		if(status){
 			init_GPS();
+			//获取当前的方向角
 			currentm = hmc5883l_read(Xoffest,Yoffest,Kx,Ky);
+			//currentLoAndLa当前经纬�?  points[positionPointTag]目的地经纬度  计算�? 当前的方向角
+			magangle = calculateBearing(currentLoAndLa,points[positionPointTag]);
 			float pidtest =  PIDController_Update(&p, magangle,currentm);
 			PWM_Turn(pidtest);
-			sprintf(testdata,"current %.2f and %d pid %.2f \n",currentm,magangle,pidtest);
-			liuxinusart(&huart3,testdata);
 		}
 		HAL_Delay(20);
   }

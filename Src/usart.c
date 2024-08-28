@@ -21,6 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "main.h"
 #include "car.h"
 #include "main.h"
 #include "sg90.h"
@@ -224,55 +225,27 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+void liuxinusart(UART_HandleTypeDef *h , char *message){
+	HAL_UART_Transmit(h,(uint8_t*)message,strlen(message),1000);
+}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart==&huart3){
 		char order = data[0];
 		char showtest[100];
 		if(order=='q'){
 			PIDController_Init(&p);
-	status = 1;
-	magangle = hmc5883l_read(Xoffest,Yoffest,Kx,Ky);
-	Car_Forward();	
-	sprintf(showtest,"Magangle = %d\n",magangle);
-	HAL_UART_Transmit(&huart3,(uint8_t*)showtest,strlen(showtest),1000);
-		}else
-		if(order=='h'){
-		Car_Backward();
-		}else
-		if(order=='l'){
-	    Car_TurnLeft();
-		}else
-		if(order=='r'){
-		Car_TurnRight();	
+	        status = 1;
+			Car_Forward();
 		}else
 		if(order=='s'){
 		Car_Stop();
-		}else if(order=='m'){
-			Set_Speed(0);
-		}else if(order=='z'){
-			Set_Speed(1);
-		}else if(order=='k'){
-			Set_Speed(2);
-		}else if(order=='o'){
-			Set_Speed(3);
 		}
-		sprintf(showtest,"Magangle = %c\n",order);
-	HAL_UART_Transmit(&huart3,(uint8_t*)showtest,strlen(showtest),1000);
 		HAL_UART_Receive_IT(&huart3,data,1);
 	}else if(huart == &huart2){
-			uint16_t year = ((uint16_t)gpsdata[11] << 8) | gpsdata[10];
-uint8_t month = gpsdata[12];
-uint8_t day = gpsdata[13];
-uint8_t hour = gpsdata[14];
-uint8_t minute = gpsdata[15];
-uint8_t second = gpsdata[16];
-
 // 解析经纬�?
-   int32_t longitude = ((int32_t)gpsdata[33] << 24) | ((int32_t)gpsdata[32] << 16) | ((int32_t)gpsdata[31] << 8) | gpsdata[30];
-   int32_t latitude = ((int32_t)gpsdata[37] << 24) | ((int32_t)gpsdata[36] << 16) | ((int32_t)gpsdata[35] << 8) | gpsdata[34];
-	
+		 updateCurrentPosition();
 	}
 
 }
+
 /* USER CODE END 1 */
