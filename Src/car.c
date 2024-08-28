@@ -103,6 +103,7 @@ void Set_Speed(speed){
 	}
 }
 //左轮TIM_CHANNEL_2 右TIM_CHANNEL_1
+//num>0 则说明 当前角度小于预订方向角   <0则说明当前角度大于预定方向角
 void PWM_Turn(float num) {
     // 基础速度，确保车辆在直线行驶时两轮速度相同
     const int baseSpeed = 400;

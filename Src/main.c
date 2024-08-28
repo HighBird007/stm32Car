@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -30,6 +31,7 @@
 #include "hmc5883l.h"
 #include "car.h"
 #include "PID.h"
+#include "gpsdata.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,10 +98,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART3_UART_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
   MX_SPI2_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   car_init();
   HAL_UART_Receive_IT(&huart3,data,1);
@@ -108,7 +112,7 @@ int main(void)
   init_mpu();
  char testdata[100];
  float currentm;
-
+   init_GPS();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -119,13 +123,13 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		if(status){
+			init_GPS();
 			currentm = hmc5883l_read(Xoffest,Yoffest,Kx,Ky);
 			float pidtest =  PIDController_Update(&p, magangle,currentm);
 			PWM_Turn(pidtest);
 			sprintf(testdata,"current %.2f and %d pid %.2f \n",currentm,magangle,pidtest);
 			liuxinusart(&huart3,testdata);
 		}
-	//	MPU_Get_RAW_Accelerometer();
 		HAL_Delay(20);
   }
   /* USER CODE END 3 */

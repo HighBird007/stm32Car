@@ -16,6 +16,8 @@ void PIDController_Init(PIDController *pid) {
 
 }
 //num>0 则说明 当前角度小于预订方向角   <0则说明当前角度大于预定方向角
+//角度差问题
+//判断应该顺时针还是逆时针转 
 float getTurnRaw(int point , int raw){
 	int delta = point - raw;
 	if (delta > 180) {
@@ -23,7 +25,6 @@ float getTurnRaw(int point , int raw){
     } else if (delta < -180) {
     delta += 360;
     }
-
 	return delta;
 	
 }
@@ -32,7 +33,7 @@ float PIDController_Update(PIDController *pid, float setpoint, float measurement
     /*
     * Error signal
     */
-	
+	//error > 0  表明小车此时转向时顺时针 应该转动多少  反之
     float error = getTurnRaw(setpoint,measurement);
 
 
