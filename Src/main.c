@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "tim.h"
@@ -95,6 +96,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART3_UART_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
@@ -121,7 +123,7 @@ int main(void)
 			init_GPS();
 			//获取当前的方向角
 			currentm = hmc5883l_read(Xoffest,Yoffest,Kx,Ky);
-			//currentLoAndLa当前经纬�?  points[positionPointTag]目的地经纬度  计算�? 当前的方向角
+			//currentLoAndLa当前经纬�??  points[positionPointTag]目的地经纬度  计算�?? 当前的方向角
 			magangle = calculateBearing(currentLoAndLa,points[positionPointTag]);
 			float pidtest =  PIDController_Update(&p, magangle,currentm);
 			PWM_Turn(pidtest);
