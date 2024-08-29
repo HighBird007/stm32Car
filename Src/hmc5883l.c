@@ -9,8 +9,9 @@
 #endif
 uint8_t xyz[6];
 int xoffset = 0, yoffset = 0;
-
+//初始化相关寄存器
 void hmc5883l_init(){
+	//此函数别管 下面一个函数会用到
 		int initcountread =0 ;
 	    char initcount[50];
 
@@ -54,7 +55,7 @@ void hmc5883l_rawread(float *GaX, float *GaY){
 	
 }
 
-
+//此函数目的是在小车开机后进入主循环运行前 进行校准 ，反正就对了
 
 void hmc5883l_selftest(float *Xoffest,float *Yoffest,float *Kx,float *Ky){
 	
@@ -89,7 +90,7 @@ void hmc5883l_selftest(float *Xoffest,float *Yoffest,float *Kx,float *Ky){
 	
 }
 
-
+// 返回的是当前方向角就完事了
 int16_t hmc5883l_read(float Xoffest,float Yoffest,float Kx,float Ky){
 	
 		float rawGaX,rawGaY;

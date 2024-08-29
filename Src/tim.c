@@ -242,7 +242,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 char testdata[200];
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim == &htim3){
-			sprintf(testdata,"current %.2f and %d %f,%f  aim %f,%f  num %d \n",currentm,magangle,longitude,latitude,points[positionPointTag].longitude,points[positionPointTag].latitude,positionPointTag);
+			sprintf(testdata,"current %.2f and %d %f,%f  aim %f,%f  num %d \n",currentm,magangle,currentLoAndLa.longitude,currentLoAndLa.latitude,points[positionPointTag].longitude,points[positionPointTag].latitude,positionPointTag);
 			liuxinusart(&huart3,testdata);
 	}
 }
