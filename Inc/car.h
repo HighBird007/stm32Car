@@ -11,8 +11,6 @@ void Car_Stop(void);
 void Enable_right(void);
 void Enable_left(void);
 void Turn_Forward(void);
-extern enum { low ,medium,fast,max}speed;
-void Set_Speed(int i);
 extern int status ;
 extern int magangle ;
 extern PIDController p;

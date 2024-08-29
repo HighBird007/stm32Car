@@ -31,6 +31,7 @@
 #include "hmc5883l.h"
 #include "car.h"
 #include "PID.h"
+#include "gpsdata.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

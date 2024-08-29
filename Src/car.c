@@ -82,26 +82,7 @@ void Enable_left(void){
 void Enable_right(void){
 	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
 }
-void Set_Speed(speed){
-	switch(speed){
-		case low:
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,400);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,400);
-		break;
-		case medium:
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,600);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,600);
-		break;
-		case fast:
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,800);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,800);
-		break;
-		case max:
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_1,999);
-		__HAL_TIM_SetCompare(&htim2,TIM_CHANNEL_2,999);
-		break;
-	}
-}
+
 //左轮TIM_CHANNEL_2 右TIM_CHANNEL_1
 void PWM_Turn(float num) {
     // 基础速度，确保车辆在直线行驶时两轮速度相同
