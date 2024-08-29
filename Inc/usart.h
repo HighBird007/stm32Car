@@ -41,7 +41,7 @@ extern UART_HandleTypeDef huart3;
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void liuxinusart(UART_HandleTypeDef *h , char *message);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
