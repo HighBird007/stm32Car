@@ -218,32 +218,9 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-			char *warning="warning\n";
-//void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
-//	if(htim==&htim1&&htim->Channel==HAL_TIM_ACTIVE_CHANNEL_2){
-//		int up,dowm;
-//		up = HAL_TIM_ReadCapturedValue(&htim1,TIM_CHANNEL_1);
-//		dowm = HAL_TIM_ReadCapturedValue(&htim1,TIM_CHANNEL_2);
-//		float length = (dowm-up)*0.034/2.0;
-//		char bluedata[50];
-//		sprintf(bluedata,"length : %.2f cm\n",length);
-//		HAL_UART_Transmit(&huart3,(uint8_t*)bluedata,strlen(bluedata),1000);
-//		 __HAL_TIM_SetCounter(&htim1,0);
-//		if(length<=15){
-//			Car_Stop();
-////			HAL_UART_Transmit(&huart3,(uint8_t*)warning,strlen(warning),1000);
-////			char content[100];
-////			sprintf(content,"%d %d %.2f",up,dowm,length);
-////			HAL_UART_Transmit(&huart3,(uint8_t*)content,strlen(content),1000);
-//		}
-//		__HAL_TIM_SetCounter(&htim1,0);
-//	}
-//}
-char testdata[200];
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim == &htim3){
-			sprintf(testdata,"current %.2f and %d %f,%f  aim %f,%f  num %d \n",currentm,magangle,currentLoAndLa.longitude,currentLoAndLa.latitude,points[positionPointTag].longitude,points[positionPointTag].latitude,positionPointTag);
-			liuxinusart(&huart3,testdata);
+			init_GPS();
 	}
 }
 /* USER CODE END 1 */

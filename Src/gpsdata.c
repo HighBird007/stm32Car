@@ -1,5 +1,6 @@
 #include "gpsdata.h"
 #include "usart.h"
+#include "car.h"
 uint8_t gpsdata[100];
 #define PI 3.14159265358979323846
 #define DEG_TO_RAD (PI / 180.0)
@@ -68,7 +69,9 @@ void updateCurrentPosition() {
     // 计算当前位置与目标点之间的距离
     double distance = calculateDistance(currentLoAndLa.latitude, currentLoAndLa.longitude, 
                                         points[positionPointTag].latitude, points[positionPointTag].longitude);
-
+	char testdata[200];
+    sprintf(testdata," %f %d%f,%f  aim %f,%f  num %d \n",currentm,magangle,currentLoAndLa.longitude,currentLoAndLa.latitude,points[positionPointTag].longitude,points[positionPointTag].latitude,positionPointTag);
+			liuxinusart(&huart3,testdata);
     // 如果距离小于允许范围，则切换到下一个目标点
     if (distance <= ALLOWABLE_DISTANCE) {
         positionPointTag++;

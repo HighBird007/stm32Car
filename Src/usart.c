@@ -231,7 +231,6 @@ void liuxinusart(UART_HandleTypeDef *h , char *message){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart==&huart3){
 		char order = data[0];
-		char showtest[100];
 		if(order=='q'){
 			PIDController_Init(&p);
 	        status = 1;
@@ -241,9 +240,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		Car_Stop();
 		}
 		HAL_UART_Receive_IT(&huart3,data,1);
+		return ;
 	}else if(huart == &huart2){
-// 解析经纬�?
+		
 		 updateCurrentPosition();
+		
 	}
 
 }

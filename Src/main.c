@@ -129,7 +129,6 @@ int main(void)
 			float pidtest =  PIDController_Update(&p, magangle,currentm);
 			PWM_Turn(pidtest);
 		}
-	//	MPU_Get_RAW_Accelerometer();
 		HAL_Delay(20);
   }
   /* USER CODE END 3 */
